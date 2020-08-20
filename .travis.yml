@@ -1,0 +1,35 @@
+language: python
+
+python:
+  - "3.7"
+
+env:
+  global:
+    - SCIB_REPO=$(pwd)
+
+install:
+  # install conda
+  - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /tmp/miniconda.sh
+  - bash /tmp/miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - hash -r
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update -q conda
+  - source $HOME/miniconda/etc/profile.d/conda.sh
+  # install scib dependencies
+  - conda config --append channels conda-forge
+  - conda config --append channels bioconda
+  - conda create -n benchmarking_data_integration_dev
+  - cd $HOME
+  - git clone https://github.com/danielStrobl/sct-docker.git
+  - cd sct-docker
+  - conda install --file requirements.txt
+  - pip install --requirement requirements_pip.txt
+  - Rscript rpackages.R requirements_R.txt
+  # install scib
+  - cd $SCIB_REPO
+  - pip install -e .
+
+script:
+  - python tests/test_pipeline.py
+
