@@ -20,16 +20,16 @@ install:
   - conda config --append channels conda-forge
   - conda config --append channels bioconda
   - conda create -n benchmarking_data_integration_dev
+  - conda activate benchmarking_data_integration_dev
   - cd $HOME
   - git clone https://github.com/danielStrobl/sct-docker.git
   - cd sct-docker
   - conda install --file requirements.txt
-  - pip install --requirement requirements_pip.txt
   - Rscript rpackages.R requirements_R.txt
-  # install scib
-  - cd $SCIB_REPO
-  - pip install -e .
+  - cd $SCIB_REPO/..
+  - pip install --requirement requirements_pip.txt
 
 script:
+  - cd $SCIB_REPO
   - python tests/test_pipeline.py
 
