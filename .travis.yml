@@ -16,14 +16,16 @@ install:
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
   - source $HOME/miniconda/etc/profile.d/conda.sh
-  # install scib dependencies
+  # setup env
   - conda config --append channels conda-forge
   - conda config --append channels bioconda
   - conda create -n benchmarking_data_integration_dev
   - conda activate benchmarking_data_integration_dev
+  # get dependencies from sct-docker
   - cd $HOME
-  - git clone https://github.com/danielStrobl/sct-docker.git
+  - git clone https://github.com/mumichae/sct-docker.git
   - cd sct-docker
+  # install scib dependencies
   - conda install --file requirements.txt
   - Rscript rpackages.R requirements_R.txt
   - cd $SCIB_REPO/..
