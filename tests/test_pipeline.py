@@ -47,9 +47,9 @@ def setup_test_directory(methods):
     # write config file
     config = {
         "ROOT" : output_dir,
-        "r_env": "benchmarking_data_integration_dev",
-        "py_env": "benchmarking_data_integration_dev",
-        "conv_env": "benchmarking_data_integration_dev",
+        "r_env": "scIB-R-integration",
+        "py_env": "scIB-python",
+        "conv_env": "scIB-R-conversion",
         "timing": False,
         "FEATURE_SELECTION": {
             "hvg": 2000,
