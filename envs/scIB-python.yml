@@ -61,3 +61,4 @@ dependencies:
     - scikit-misc
     - keras==2.1
     - louvain==0.6.1
+    - scgen
