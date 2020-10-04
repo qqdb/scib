@@ -1,12 +1,14 @@
 import pytest
 import scIB
+import scanpy as sc
+import numpy as np
 import os
 import warnings
 warnings.filterwarnings('ignore')
 import subprocess
 import logging
 
-CORES = "2"
+CORES = "1"
 LOGGER = logging.getLogger(__name__)
 
 

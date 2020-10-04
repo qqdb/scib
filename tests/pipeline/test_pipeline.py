@@ -14,7 +14,7 @@ METHODS = {
 
 class Test_Pipeline:
 
-    @pytest.fixture(scope="class", params=[["scgen", "scanorama", "seurat", "trvae"]])
+    @pytest.fixture(scope="class", params=[["scgen", "scanorama", "trvae"]])
     def run_dir(self, request, tmpdir_factory, adata_factory):
         """
         create necessary files for a test directory
@@ -58,25 +58,37 @@ class Test_Pipeline:
         with config_file.open('w') as f:
             f.write(json.dumps(config, indent=2))
 
-        return {
+        yield {
             "workdir": pathlib.Path(scIB.__file__).parent.parent,
             "config": config,
             "configfile": config_file,
             "data_dir": data_dir,
             "input_dir": input_dir,
+            "adata_raw" : input_adata_file,
             "output_dir": output_dir
         }
 
-    def run_snakemake(self, run_dir, dryrun=False):
+        # cleanup
+        data_dir.remove()
+
+
+    def run_snakemake(self, run_dir, args=[]):
         snakeroot = run_dir["workdir"]
         configfile = run_dir["configfile"]
-        cmd = ["snakemake", "--configfile", str(configfile), "-j", CORES]
-        if dryrun:
-            cmd.append("-n")
+        if isinstance(args, str):
+            args = [args]
+        cmd = ["snakemake", "--configfile", str(configfile), "-j", CORES].extend(args)
         return run(cmd, snakeroot)
 
     def test_dryrun(self, run_dir):
-        self.run_snakemake(run_dir, dryrun=True)
+        self.run_snakemake(run_dir, args=["-n"])
 
-    def test_snakemake(self, run_dir):
-        self.run_snakemake(run_dir, dryrun=False)
+    @pytest.fixture(scope="module")
+    def test_integration(self, run_dir):
+        self.run_snakemake(run_dir, args=["integration"])
+        return run_dir
+
+    @pytest.fixture(scope="module")
+    def test_metrics(self, run_dir, test_integration):
+        self.run_snakemake(run_dir, args=["metrics"])
+        return run_dir
