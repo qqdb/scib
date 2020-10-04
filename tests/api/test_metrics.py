@@ -68,7 +68,7 @@ def test_pcr_comparison(adata_factory, embed_factory, verbose=True):
 
     # use different embedding
     adata = adata_factory()
-    adata_int = embed_factory(type_='full')
+    adata_int = embed_factory(adata, type_='full')
     score = scIB.me.pcr_comparison(
         adata, adata_int,
         covariate='batch',
