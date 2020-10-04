@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
  
 CFLAGS=$CFLAGS_OLD
 export CFLAGS
