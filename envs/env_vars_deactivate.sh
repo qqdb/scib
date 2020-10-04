@@ -9,5 +9,5 @@ export LDFLAGS
 unset LDFLAGS_OLD
 
 R_LIBS=$R_LIBS_OLD
-export $R_LIBS
+export R_LIBS
 unset R_LIBS_OLD
