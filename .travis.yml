@@ -17,12 +17,18 @@ install:
   - conda config --append channels conda-forge
   - conda config --append channels bioconda
   - conda env create --file envs/scIB-python.yml
+  - bash envs/set_vars.sh scIB-python
   - conda env create --file envs/scIB-R-integration.yml
+  - bash envs/set_vars.sh scIB-R-integration
   - conda env create --file envs/scIB-R-conversion.yml
+  - bash envs/set_vars.sh scIB-R-conversion
 
-  # install scIB and tests
+  # install scIB and test requirements
+  - conda activate scIB-python
+  - conda install -c conda-forge -c bioconda snakemake
   - pip install -r tests/requirements.txt
   - pip install -e . -vv
+
 
 script:
   - pytest -sv
