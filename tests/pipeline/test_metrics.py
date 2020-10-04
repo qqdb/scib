@@ -1,15 +1,12 @@
+from tests.common import *
+from scIB.integration import *
+
 import os
 import subprocess
-import numpy as np
 import pandas as pd
-import scanpy as sc
-from scIB.tests import utils
-import warnings
-warnings.filterwarnings('ignore')
 
-
-def metrics_all_methods():
-    adata = utils.create_adata_dummy()
+def metrics_all_methods(adata_factory):
+    adata = adata_factory()
     
     methods = {
         'scanorama': runScanorama,
@@ -23,30 +20,30 @@ def metrics_all_methods():
     }
     # for name, func in methods.items():
 
-def test_all_metrics():
-    adata = utils.create_adata_dummy()
+
+def test_all_metrics(adata_factory, test_snakemake):
+    adata = adata_factory()
     adata_int = adata.copy()
-    
+
+    script = os.path.join(os.path.dirname(scIB.__file__), "scripts", "metrics.py")
+
     for ot in ["full", "embed", "knn"]:
-        all_metrics(adata, adata_int, script="metrics.py", type_=ot, method="orig")
+        all_metrics(adata, adata_int, script=script, type_=ot, pipeline_dir=test_snakemake, method="orig")
    
 
-def all_metrics(adata_u, adata_i, script, type_, method, dir_="./data", verbose=False):
+def all_metrics(adata_u, adata_i, script, type_, method, pipeline_dir, verbose=False):
     """
     params:
         adata_u: unintegrated anndata
         adata_i: integrated anndata
         script: path to metrics.py script
-        dir_: directory to test output
+        pipeline_dir: directory to test output
         type_: one of 'full', 'embed', 'knn'
         method: name of method, for saving file
     """
-    
-    #script = os.path.join(os.path.dirname(scIB.__file__), "scripts", "metrics.py")
-    
-    unintegrated = os.path.join(dir_, "unintegrated.h5ad")
-    integrated = os.path.join(dir_, f"{method}.h5ad")
-    metrics_dir = os.path.join(dir_, "metrics_out")
+    unintegrated = pipeline_dir["adata_raw"]
+    integrated = os.path.join(pipeline_dir["output_dir"], "integrated", f"{method}.h5ad")
+    metrics_dir = os.path.join(pipeline_dir["output_dir"], "metrics")
     
     if not os.path.exists(metrics_dir):
         os.makedirs(metrics_dir)

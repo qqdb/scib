@@ -1,9 +1,7 @@
 from .common import *
-import numpy as np
-import scanpy as sc
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="session")
 def adata_factory():
     def adata_factory_(pca=False, n_top_genes=None, neighbors=False):
         adata = sc.datasets.paul15()
@@ -24,9 +22,32 @@ def adata_factory():
     return adata_factory_
 
 
-@pytest.fixture(scope="module")
-def adata_embed(adata_factory):
-    adata = adata_factory(pca=True, n_top_genes=2000)
-    mtx = sc.tl.pca(adata, copy=True).obsm['X_pca']
-    adata.obsm['X_emb'] = mtx
-    return adata
+@pytest.fixture(scope="session")
+def embed_factory():
+    def adata_embed_(adata, type_):
+        if type_ == 'pca':
+            if 'X_pca' in adata.obsm:
+                mtx = adata.obsm['X_pca']
+            else:
+                mtx = sc.tl.pca(adata, copy=True).obsm['X_pca']
+        elif type_ == 'full':
+            mtx = adata.X
+        else:
+            raise ValueError(f"'{type_}' not a valid embedding type")
+        adata.obsm['X_emb'] = mtx
+        return adata
+    return adata_embed_
+
+
+@pytest.fixture(scope="session")
+def cluster_factory():
+    def cluster_factory_(adata, label_key, cluster_key="cluster", verbose=False):
+        res_max, score_max, score_all = scIB.cl.opt_louvain(
+            adata,
+            label_key=label_key,
+            cluster_key=cluster_key,
+            plot=False, inplace=True, force=True,
+            verbose=verbose
+        )
+        return res_max, score_max, score_all
+    return cluster_factory_
