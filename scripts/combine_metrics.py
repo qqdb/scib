@@ -11,13 +11,14 @@ def rewrite(file_path, file_path_recomp):
         try:    
             with open(file_path_recomp, 'r') as file:
                 data_recomp = file.readlines()
-                data[1] = data_recomp[1]
-                data[2] = data_recomp[2]
-                data[7] = data_recomp[7]
+                data[5] = data_recomp[5]
+                data[6] = data_recomp[6]
+                #data[7] = data_recomp[7]
         except:
             print('recomp file not present')
+            print(data[0])
         new_path = file_path.replace("metrics", "metrics_combined", 1)
-        print(dirname(new_path))
+        #print(dirname(new_path))
         Path(dirname(new_path)).mkdir(parents=True, exist_ok=True)
         with open(new_path, 'w') as file:
             file.writelines(data)
@@ -50,6 +51,9 @@ def update_timestamp_task(config, task, update_metrics=True):
             for feat in hvgs:
                 folder_base = '/'.join([base_folder,task,'metrics',scal,feat])+'/'
                 folder_base_recomp = '/'.join([base_folder,task,'metrics_recomp',scal,feat])+'/'
+
+                if (scal=='unscaled') & (feat=='full_feature'):
+                    rewrite(folder_base+'unintegrated_full.csv', folder_base_recomp+'unintegrated_full.csv')
                 for method in methods:
                     out_types = config['METHODS'][method]['output_type']
                     if isinstance(out_types, str):
@@ -61,7 +65,6 @@ def update_timestamp_task(config, task, update_metrics=True):
                             full_path = folder_base+file_base+end
                             full_path_recomp = folder_base_recomp+file_base+end
                             rewrite(full_path, full_path_recomp)
-        
 
 
 if __name__=='__main__':
