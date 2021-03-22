@@ -214,12 +214,12 @@ if __name__=='__main__':
         lisi_graph_=False
         trajectory_=False
     elif args.recomp_cluster:  # hack for recomputing methods
-        silhouette_ = False
+        silhouette_ = True
         nmi_ = False
         ari_ = False
-        pcr_ = True
-        cell_cycle_ = True
-        isolated_labels_ = False
+        pcr_ = False
+        cell_cycle_ = False
+        isolated_labels_ = True
         hvg_score_ = False
         graph_conn_ = False
         kBET_ = False

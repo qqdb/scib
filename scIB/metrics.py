@@ -1868,7 +1868,7 @@ def metrics(adata, adata_int, batch_key, label_key,
         ari_score = np.nan
     results['ARI_cluster/label'] = ari_score
     
-    if silhouette_:
+    if False: # silhouette_
         print('silhouette score...')
         # global silhouette coefficient
         sil_global = silhouette(adata_int, group_key=label_key, embed=embed, metric=si_metric)
@@ -1907,7 +1907,7 @@ def metrics(adata, adata_int, batch_key, label_key,
             cluster=True,
             n=n_isolated,
             verbose=False
-        )
+        ) if False else np.nan
         il_score_sil = isolated_labels(
             adata_int,
             label_key=label_key,
